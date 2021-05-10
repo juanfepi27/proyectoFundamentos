@@ -7,7 +7,6 @@
  * @author Helmuth Trefftz
  * @version 2021 04 27
  */
-import java.util.InputMismatchException;
 import java.util.Scanner;
 public class Scrabble
 {
