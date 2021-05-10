@@ -1,0 +1,13 @@
+casa
+asa
+as
+perro
+gato
+familia
+mama
+papa
+niño
+planta
+arbol
+avión
+carro 
