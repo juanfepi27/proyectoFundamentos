@@ -32,13 +32,19 @@ public class Diccionario
 				String s = in.next();
 
                 //Si en el diccionario se coloca alguna palabra con tilde, entonces las siguientes lineas de código reemplazan esas tildes por los mismos caracteres sin tildes.
-                s = s.replaceAll("á", "a");
+
+				s = s.toLowerCase();
+				
+				s = s.replaceAll("á", "a");
                 s = s.replaceAll("é", "e");
                 s = s.replaceAll("í", "i");
                 s = s.replaceAll("ó", "o");
                 s = s.replaceAll("ú", "u");
+				s = s.replaceAll("ü", "u");
 
-				diccionario.add(s.toLowerCase());
+				diccionario.add(s);
+
+
 				cont++;
 			}
 		} catch(FileNotFoundException e) {
@@ -110,6 +116,14 @@ public class Diccionario
 
 			}
 
+		}
+
+	}
+
+	public void mostrarDiccionario(){
+
+		for(int i = 0; i<diccionario.size(); i++){
+			System.out.println(diccionario.get(i));
 		}
 
 	}

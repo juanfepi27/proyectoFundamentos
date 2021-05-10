@@ -28,13 +28,13 @@
  */
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class LetterCombinations{
 
 	UsedLetter [] usedLetters;
 	int longitud;
 	Diccionario diccionario;
+	Tablero tablero;
 	ArrayList <String> palabrasValidadas = new ArrayList<>();
 	ArrayList <Puntaje> puntajes = new ArrayList<>();
 	
@@ -42,8 +42,9 @@ public class LetterCombinations{
 		* En el constructor debe recibir un diccionario con las palabras
 		* válidas
 	*/
-	public LetterCombinations(Diccionario diccionario) {
+	public LetterCombinations(Diccionario diccionario, Tablero tablero) {
 		this.diccionario = diccionario;
+		this.tablero = tablero;
 	}
 
 	/**
@@ -56,7 +57,7 @@ public class LetterCombinations{
 
 		usedLetters = new UsedLetter[s.length()];
 
-		for(int i = 0; i < s.length(); i++) {
+		for(int i = 0; i < s.length(); i++){
 			usedLetters[i] = new UsedLetter(s.charAt(i), false);
 		}
 		
@@ -76,7 +77,8 @@ public class LetterCombinations{
 		if(s.length() == longitud) {
 
 			if(diccionario.buscarPalabras(s)) {
-				if(!(palabrasValidadas.contains(s))) {
+				//Si no está en estos arrays(reptida o ya usada) añádala.
+				if(	!(palabrasValidadas.contains(s)) && !(tablero.palabrasEnTablero.contains(s))) {
 					this.palabrasValidadas.add(s);
 				}
 			}
@@ -110,12 +112,6 @@ public class LetterCombinations{
 	}
 
 
-	public void mostrarListaValida(){//OJO
-		for(int i = 0; i<this.palabrasValidadas.size(); i++){
-			System.out.println(this.palabrasValidadas.get(i));
-		}
-	}
-
 
 	public void darPuntaje(ArrayList<String> palabrasValidadas){
 
@@ -129,151 +125,151 @@ public class LetterCombinations{
 				switch(palabrasValidadas.get(i).charAt(j)){
 
 					case 'a': 
-                        puntos += 1;
-                        break;
+						puntos += 1;
+						break;
 
-                    case 'b':
-                        puntos += 3;
-                        break;
+					case 'b':
+						puntos += 3;
+						break;
 
 					case 'c': 
-                        if((j+1) != (palabrasValidadas.get(i).length()-1)){
+          				if((j+1) < (palabrasValidadas.get(i).length()-1)){
 
-          	                if(palabrasValidadas.get(i).charAt((j+1)) == 'h'){
-							    puntos += 5;
-							    j++;
-							    break;
-						    }
-						    else{
-						    puntos += 3;
-          	                break;
-						    }		
-                        }
-					    else{
-						    puntos += 3;
-          	                break;
-					    }
+          					if(palabrasValidadas.get(i).charAt((j+1)) == 'h'){
+								puntos += 5;
+								j++;
+								break;
+							}
+							else{
+						  		puntos += 3;
+          	  					break;
+							}		
+          				}			
+						else{
+							puntos += 3;
+          					break;
+						}
 
 					case 'd': 
-                        puntos += 2;
-                        break;
+							puntos += 2;
+							break;
 
 					case 'e': 
-                        puntos += 1;
-                        break;
+							puntos += 1;
+							break;
 
 					case 'f': 
-                        puntos += 4;
-                        break;
+							puntos += 4;
+							break;
 
 					case 'g': 
-                        puntos += 2;
-                        break;
+							puntos += 2;
+							break;
 
 					case 'h': 
-                        puntos += 4;
-                        break;
+							puntos += 4;
+							break;
 
 					case 'i': 
-                        puntos += 1;
-                        break;
+							puntos += 1;
+							break;
 					
 					case 'j': 
-                        puntos += 8;
-                        break;
+							puntos += 8;
+							break;
 
 					case 'l': 
-					    if((j+1) != (palabrasValidadas.get(i).length()-1)){
+						if((j+1) < (palabrasValidadas.get(i).length()-1)){
 
-          	                if(palabrasValidadas.get(i).charAt((j+1)) == 'l'){
-							    puntos += 8;
-							    j++;
-							    break;
-						    }
-						    else{
-						    puntos += 1;
-          	                break;
-						    }
-						
-                        }
-					    else{
-						    puntos += 1;
-          	                break;
-					    }
+          					if(palabrasValidadas.get(i).charAt((j+1)) == 'l'){
+								puntos += 8;
+								j++;
+								break;
+							}
+							else{
+						  		puntos += 1;
+          	  					break;
+							}			
+          				}
+						else{
+							puntos += 1;
+							break;
+					}
 
 					case 'm': 
-                        puntos += 3;
-                        break;
+						puntos += 3;
+						break;
 
 					case 'n': 
-                        puntos += 1;
-                        break;
+						puntos += 1;
+						break;
 
 					case 'ñ': 
-                        puntos += 8;
-                        break;
+						puntos += 8;
+						break;
 
 					case 'o': 
-                        puntos += 1;
-                        break;
+						puntos += 1;
+						break;
 
 					case 'p': 
-                        puntos += 3;
-                        break;
+						puntos += 3;
+						break;
 
-                    case 'q': 
-                        puntos += 5;
-                        break;
+          			case 'q': 
+						puntos += 5;
+						break;
 
-                    case 'r': 
-         	            if((j+1) != (palabrasValidadas.get(i).length()-1)){
+          			case 'r': 
+         				if((j+1) < (palabrasValidadas.get(i).length()-1)){
 
-          	                if(palabrasValidadas.get(i).charAt((j+1)) == 'r'){
-							    puntos += 8;
-							    j++;
-							    break;
-						    }
-						    else{
-						        puntos += 1;
-          	                    break;
-						    }
-                        }
-					    else{
-						    puntos += 1;
-          	                break;
-					    }
-                    case 's': 
-                        puntos += 1;
-                        break;
+          					if(palabrasValidadas.get(i).charAt((j+1)) == 'r'){
+								puntos += 8;
+								j++;
+								break;
+							}
+							else{
+						  		puntos += 1;
+          	  					break;
+							}				
+          				}
+						else{
+							puntos += 1;
+          					break;
+						}
 
-                    case 't': 
-                        puntos += 1;
-                        break;
+          			case 's': 
+						puntos += 1;
+						break;
 
-                    case 'u': 
-                        puntos += 1;
-                        break;
+          			case 't': 
+						puntos += 1;
+						break;
 
-                    case 'v': 
-                        puntos += 4;
-                        break;
+          			case 'u': 
+						puntos += 1;
+						break;
 
-                    case 'x': 
-                        puntos += 8;
-                        break;
+          			case 'v': 
+						puntos += 4;
+						break;
 
-                    case 'y': 
-                        puntos += 4;
-                        break;
+          			case 'x': 
+						puntos += 8;
+						break;
 
-                    case 'z': 
-                        puntos += 10;
-                        break;
+          			case 'y': 
+						puntos += 4;
+						break;
+
+          			case 'z': 
+						puntos += 10;
+						break;
 				}
 			}
 			palabraPuntaje.setPuntos(puntos);
-            puntajes.add(palabraPuntaje);
-        }
+      		puntajes.add(palabraPuntaje);
+    	}
 
 		ordenarPuntajes();
 		mostrarPuntajes();
@@ -281,19 +277,20 @@ public class LetterCombinations{
 	}
 
 
+	
 	public void ordenarPuntajes(){
 
-        for(int i = 0; i < this.puntajes.size() - 1; i++){
+    	for(int i = 0; i < this.puntajes.size() - 1; i++){
 
 			for(int j = i+1; j < this.puntajes.size(); j++){
 
 				if(this.puntajes.get(i).getPuntos() < this.puntajes.get(j).getPuntos()){
 
-                    Puntaje temp = this.puntajes.get(i);
+          			Puntaje temp = this.puntajes.get(i);
 
-				    this.puntajes.set(i, this.puntajes.get(j));
+					this.puntajes.set(i, this.puntajes.get(j));
                     
-                    this.puntajes.set(j, temp);
+          			this.puntajes.set(j, temp);
 
 				}
 			}
@@ -310,14 +307,14 @@ public class LetterCombinations{
 				System.out.println((i+1)+". ' " + this.puntajes.get(i).getPalabra()+ " '" + " -> su puntaje es: " + this.puntajes.get(i).getPuntos());
 			}
 
-        }
-        else{
+    	}
+		else{
 
 			for(int i = 0; i < 10; i++){
 				System.out.println((i+1)+". ' " + this.puntajes.get(i).getPalabra()+ " '" + " -> su puntaje es: " + this.puntajes.get(i).getPuntos());
 			}
 			
-        }
+    	}
 	}
 
 }
