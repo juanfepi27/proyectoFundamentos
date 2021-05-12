@@ -98,6 +98,10 @@ public class Diccionario
 	}
 
 
+	/**
+	 * Este método utiliza el ordenamiento Select Sort para organizar
+	 * de manera alfabética el arreglo de palabras en el diccionario.
+	 */
     public void ordenarDiccionario(){
 		
 	    for(int i = 0; i < this.diccionario.size() - 1; i++){
@@ -116,14 +120,6 @@ public class Diccionario
 
 			}
 
-		}
-
-	}
-
-	public void mostrarDiccionario(){
-
-		for(int i = 0; i<diccionario.size(); i++){
-			System.out.println(diccionario.get(i));
 		}
 
 	}
