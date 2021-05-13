@@ -24,9 +24,9 @@ public class Scrabble{
 		Diccionario diccionario = new Diccionario();
 		diccionario.leerDiccionario("diccionario.txt");
 
-	Scanner entrada = new Scanner(System.in);
+		Scanner entrada = new Scanner(System.in);
 		
-	int siNo;
+		int siNo;
 
 		do{
 		
@@ -46,9 +46,11 @@ public class Scrabble{
 			
 			lc.crearPalabras(letrasEnMiMano);
 			System.out.println("\nEstas son tus mejores opciones:\n");
-			lc.darPuntaje(lc.palabrasValidadas);
+			lc.darPuntaje(lc.palabrasASugerir);
+
 			
 			tablero.anadirAlTablero(lc);
+
 
 			System.out.println("¿Quieres seguir?");
 
@@ -58,6 +60,7 @@ public class Scrabble{
 			System.out.print("\nIngrese el número de la opción deseada: ");
 			siNo = entrada.nextInt();
 
+			//Ciclo por si el usuario ingresa una opción incorrecta
 			while(siNo != 1 && siNo != 2 ){
 
 				System.out.print("\nHas digitado una opción incorrecta, vuelve a intentarlo: ");

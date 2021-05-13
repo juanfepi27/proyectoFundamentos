@@ -1,26 +1,3 @@
-/*
-1. Tablero - Alberto
-2. Faldero - Alfredo
-3. Galena - Angela
-4. Lacra - Clara
-5. Deudora - Eduardo
-6. Regador - Gerardo
-7. Trecho - Hector
-8. Arido - Dario
-9. Bailes - Basile
-10. Reclamo - Carmelo
-11. Trama - Marta
-12. Meato - Mateo
-13. Camión - Mónica
-14. Oscilan - Nicolás
-15. Corrida - Ricardo
-16. Saunas - Susana 
-17. Aretes - Teresa
-18. Invocare - Veronica
-19. Riesgo - Sergio
-20. Ebanistas - Sebastian
- */
-
 /**
  * Esta clase genera posibles palabras a partir de las letras que
  * el usario tiene en su mano
@@ -35,8 +12,8 @@ public class LetterCombinations{
 	int longitud;
 	Diccionario diccionario;
 	Tablero tablero;
-	ArrayList <String> palabrasValidadas = new ArrayList<>();
-	ArrayList <Puntaje> puntajes = new ArrayList<>();
+	ArrayList <String> palabrasASugerir = new ArrayList<>();
+	ArrayList <Puntaje> palabrasConPuntaje = new ArrayList<>();
 	
 	/**
 		* En el constructor debe recibir un diccionario con las palabras
@@ -46,6 +23,7 @@ public class LetterCombinations{
 		this.diccionario = diccionario;
 		this.tablero = tablero;
 	}
+
 
 	/**
 		* Recibir las letras que el usuario tiene en la mano 
@@ -63,6 +41,7 @@ public class LetterCombinations{
 		
 	}
 
+
 	/**
 		* Método recursivo que genera las posibles variaciones con 
 		* las letras que el usuario tiene en la mano.
@@ -70,7 +49,7 @@ public class LetterCombinations{
 		* es válida.
 		* El método es recursivo.
 		* 
-		* @param s String que se va conformando hasta el momento.
+		* @param s String del cual sacaremos las posibles combinaciones.
 	*/
 	public void receiveString(String s) {
 
@@ -78,8 +57,8 @@ public class LetterCombinations{
 
 			if(diccionario.buscarPalabras(s)) {
 				//Si no está en estos arrays(reptida o ya usada) añádala.
-				if(	!(palabrasValidadas.contains(s)) && !(tablero.palabrasEnTablero.contains(s))) {
-					this.palabrasValidadas.add(s);
+				if(	!(palabrasASugerir.contains(s)) && !(tablero.palabrasEnTablero.contains(s))) {
+					this.palabrasASugerir.add(s);
 				}
 			}
 
@@ -112,17 +91,24 @@ public class LetterCombinations{
 	}
 
 
+	/**
+	 * Este método le da un puntaje a las palabras del arreglo palabrasASugerir.
+	 * Se hace un ciclo en el cual se crea un objeto Puntaje utilizando la palabra en 
+	 * palabrasASugerir y luego a este objeto se le establece un puntaje.
+	 * Posteriormente el objeto es agregado a un array llamado palabrasConPuntaje.
+	 * 
+	 * @param palabrasASugerir Arreglo de combinaciones generadas que se encuentran en el diccionario.
+	 */
+	public void darPuntaje(ArrayList<String> palabrasASugerir){
 
-	public void darPuntaje(ArrayList<String> palabrasValidadas){
+		for(int i = 0; i < palabrasASugerir.size(); i++){
 
-		for(int i = 0; i < palabrasValidadas.size(); i++){
-
-			Puntaje palabraPuntaje = new Puntaje (palabrasValidadas.get(i));
+			Puntaje palabraPuntaje = new Puntaje (palabrasASugerir.get(i));
 			int puntos = 0;
       
-			for(int j = 0; j<palabrasValidadas.get(i).length(); j++){
+			for(int j = 0; j<palabrasASugerir.get(i).length(); j++){
 
-				switch(palabrasValidadas.get(i).charAt(j)){
+				switch(palabrasASugerir.get(i).charAt(j)){
 
 					case 'a': 
 						puntos += 1;
@@ -133,9 +119,9 @@ public class LetterCombinations{
 						break;
 
 					case 'c': 
-          				if((j+1) < (palabrasValidadas.get(i).length()-1)){
+          				if((j+1) < (palabrasASugerir.get(i).length()-1)){
 
-          					if(palabrasValidadas.get(i).charAt((j+1)) == 'h'){
+          					if(palabrasASugerir.get(i).charAt((j+1)) == 'h'){
 								puntos += 5;
 								j++;
 								break;
@@ -179,9 +165,9 @@ public class LetterCombinations{
 							break;
 
 					case 'l': 
-						if((j+1) < (palabrasValidadas.get(i).length()-1)){
+						if((j+1) < (palabrasASugerir.get(i).length()-1)){
 
-          					if(palabrasValidadas.get(i).charAt((j+1)) == 'l'){
+          					if(palabrasASugerir.get(i).charAt((j+1)) == 'l'){
 								puntos += 8;
 								j++;
 								break;
@@ -221,9 +207,9 @@ public class LetterCombinations{
 						break;
 
           			case 'r': 
-         				if((j+1) < (palabrasValidadas.get(i).length()-1)){
+         				if((j+1) < (palabrasASugerir.get(i).length()-1)){
 
-          					if(palabrasValidadas.get(i).charAt((j+1)) == 'r'){
+          					if(palabrasASugerir.get(i).charAt((j+1)) == 'r'){
 								puntos += 8;
 								j++;
 								break;
@@ -268,29 +254,34 @@ public class LetterCombinations{
 				}
 			}
 			palabraPuntaje.setPuntos(puntos);
-      		puntajes.add(palabraPuntaje);
+      		palabrasConPuntaje.add(palabraPuntaje);
     	}
 
-		ordenarPuntajes();
-		mostrarPuntajes();
+		ordenarPalabrasPorPuntaje(palabrasConPuntaje);
+		mostrarPalabrasConPuntaje(palabrasConPuntaje);
 		
 	}
 
 
-	
-	public void ordenarPuntajes(){
+	/**
+	 * El siguiente método toma el atributo puntaje de cada objeto en 
+	 * el arreglo palabrasConPuntaje y ordena los objetos de mayor a menor puntaje.
+	 * 
+	 * @param palabrasConPuntaje Arreglo de objetos de la clase Puntaje.
+	 */
+	public void ordenarPalabrasPorPuntaje(ArrayList<Puntaje> palabrasConPuntaje){
 
-    	for(int i = 0; i < this.puntajes.size() - 1; i++){
+    	for(int i = 0; i < palabrasConPuntaje.size() - 1; i++){
 
-			for(int j = i+1; j < this.puntajes.size(); j++){
+			for(int j = i+1; j < palabrasConPuntaje.size(); j++){
 
-				if(this.puntajes.get(i).getPuntos() < this.puntajes.get(j).getPuntos()){
+				if(palabrasConPuntaje.get(i).getPuntos() < palabrasConPuntaje.get(j).getPuntos()){
 
-          			Puntaje temp = this.puntajes.get(i);
+          			Puntaje temp = palabrasConPuntaje.get(i);
 
-					this.puntajes.set(i, this.puntajes.get(j));
+					palabrasConPuntaje.set(i, palabrasConPuntaje.get(j));
                     
-          			this.puntajes.set(j, temp);
+          			palabrasConPuntaje.set(j, temp);
 
 				}
 			}
@@ -299,19 +290,25 @@ public class LetterCombinations{
 	}
 
 
-	public void mostrarPuntajes(){
+	/**
+	 * El siguiente método muestra el atributo palabra de cada objeto
+	 * en el arreglo palabrasConPuntaje, luego muestra su respectivo puntaje.
+	 * 
+	 * @param palabrasConPuntaje Arreglo de objetos de la clase Puntaje.
+	 */
+	public void mostrarPalabrasConPuntaje(ArrayList<Puntaje> palabrasConPuntaje){
 
-		if(this.puntajes.size()<=10){
+		if(palabrasConPuntaje.size()<=10){
 
-			for(int i = 0; i < this.puntajes.size(); i++){
-				System.out.println((i+1)+". ' " + this.puntajes.get(i).getPalabra()+ " '" + " -> su puntaje es: " + this.puntajes.get(i).getPuntos());
+			for(int i = 0; i < palabrasConPuntaje.size(); i++){
+				System.out.println((i+1)+". " + palabrasConPuntaje.get(i).getPalabra() + " -> su puntaje es: " + palabrasConPuntaje.get(i).getPuntos());
 			}
 
     	}
 		else{
 
 			for(int i = 0; i < 10; i++){
-				System.out.println((i+1)+". ' " + this.puntajes.get(i).getPalabra()+ " '" + " -> su puntaje es: " + this.puntajes.get(i).getPuntos());
+				System.out.println((i+1)+". " + palabrasConPuntaje.get(i).getPalabra()+ " -> su puntaje es: " + palabrasConPuntaje.get(i).getPuntos());
 			}
 			
     	}

@@ -111,7 +111,7 @@ Si va antes entonces revisambos un subarreglo que va desde el inicio hasta antes
 
 AGREGAR EL PUNTAJE
 
-Para asignarle el puntaje a las palabras pensamos en hacer un switch en la clase LetterCombination. El switch va a revisar cada caracter de las palabras en el array palabrasValidadas y cada caso va a ser cada letra y se le va a sumar su respectivo puntaje a la variable puntos.
+Para asignarle el puntaje a las palabras pensamos en hacer un switch en la clase LetterCombination. El switch va a revisar cada caracter de las palabras en el array palabrasASugerir y cada caso va a ser cada letra y se le va a sumar su respectivo puntaje a la variable puntos.
 
 Para facilitar el posterior ordenamiento creamos una clase Puntaje que crea objetos con palabras y puntos, la palabra se toma del string que está siendo evaluado en el momento y los puntos de la variable descrita anteriormente.
 
@@ -122,8 +122,8 @@ se presntaron problemas con palabras cómo carro, donde su puntaje no se mostrab
 y el código era el siguiente:
 
 case 'r': 
-if(j++ != (palabrasValidadas.get(i).length()-1)){
- 	if(palabrasValidadas.get(i).charAt((j+1)) == 'r'){
+if(j++ != (palabrasASugerir.get(i).length()-1)){
+ 	if(palabrasASugerir.get(i).charAt((j+1)) == 'r'){
 		puntos += 8;
 		j++;
 		break;
@@ -139,8 +139,8 @@ if(j++ != (palabrasValidadas.get(i).length()-1)){
 el problema se ncontraba en que al comparar el operador j++ , la variable en sí cambiaba, por lo que no llegaba a sr igual para el siguiente condicional, corrigiendo este error el código quedó así:
 
 case 'r': 
-if((j+1) != (palabrasValidadas.get(i).length()-1)){
- 	if(palabrasValidadas.get(i).charAt((j+1)) == 'r'){
+if((j+1) != (palabrasASugerir.get(i).length()-1)){
+ 	if(palabrasASugerir.get(i).charAt((j+1)) == 'r'){
 		puntos += 8;
 		j++;
 		break;
@@ -181,13 +181,69 @@ caractér en el String a modificar.
 
 -----------------------------------------------------------------------------
 	
--situación no añadir palabras del tablero
-	    crear una clase tablero
-		tiene como atributo un arraylist de strings llamado palabrasEnTablero
+CONTROL PARA NO USAR LAS PALABRAS DEL TABLERO
 
-	instanciarlo en Scrabble.java
+crear una clase tablero que tiene como atributo un arraylist de strings llamado palabrasEnTablero
 
-	antes de pedir las letras de la mano, preguntar por las palabras que ya esten en el tablero y añadirlas a palabrasYaUsadas
+instanciarlo en Scrabble.java
 
-	cuando se esté ejecutando el metodo receiveString() luego de prguntar "si  está en el diccionario", preguntar "si NO está en palabrasYaUsadas", siga prguntando si está en palabrasValidadas, sino que no haga nada, el programa simplemente seguirá.
-- 
+cuando se esté ejecutando el metodo receiveString() luego de preguntar "si  está en el diccionario", preguntar "si NO está en palabrasEnTablero", siga prguntando si está en palabrasValidadas, sino que no haga nada, el programa simplemente seguirá.
+
+
+Solución:
+Crear un método anadirAlTablero que recibe por parametro la combinación de letras lc y accede a su lista de puntajes pidiendo qué palabra se va a añadir y tomando esta posición se accede al atributo palabra del objeto puntaje y se añade esta a la lista de palabrasEnTablero. 
+
+En el método receiveString se añadio el control de que la palabra solo se añade a palabrasValidadas en caso de que no este en este mismo ni en palabrasEnTablero, evitando repeticiones.
+
+También hicimos un try y un catch para verificar que si el usuario pone una carácter diferente a un número o si pone un número mayor a las opciones que salen entonces sale una frase que dice "Has ingresado una opción errónea" y vuelve a llamar el método de anadirAlTablero para que el usuario escoja una opción correcta. 
+
+---------------------------------------------------------
+EJECUCIÓN CONSTANTE
+
+Para permitir que el usuario pueda repetir el proceso se añadio un ciclo do while en el que se permanece hasta que a la pregunta "¿Quieres seguir?" se responda con 2 (no). Al principio teníamos la creación de lc afuera del do while por lo que cuando se volvía a hacer la operación salían las palabras repetidas, así:
+
+Lei 37 palabras
+
+Escriba las letras que tiene en su mano sin espacios
+
+asca
+
+Estas son tus mejores opciones:
+
+1. ' saca ' -> su puntaje es: 6
+2. ' casa ' -> su puntaje es: 6
+3. ' asa ' -> su puntaje es: 3
+4. ' as ' -> su puntaje es: 2
+
+Escoge la opción de la palabra que quieres añadir al tablero: 1
+saca
+¿Quieres seguir?
+
+1. SÍ
+2. NO
+
+Ingrese el número de la opción deseada: 1
+
+Escriba las letras que tiene en su mano sin espacios
+
+asca
+
+Estas son tus mejores opciones:
+
+1. ' saca ' -> su puntaje es: 6
+2. ' casa ' -> su puntaje es: 6
+3. ' saca ' -> su puntaje es: 6
+4. ' casa ' -> su puntaje es: 6
+5. ' asa ' -> su puntaje es: 3
+6. ' asa ' -> su puntaje es: 3
+7. ' as ' -> su puntaje es: 2
+8. ' as ' -> su puntaje es: 2
+
+
+Entonces, lo que hicimos para solucionar esto fue crear lc dentro del do while para que cada vez que se repitiera la operación empezara de 0.
+
+Además hicimos otro ciclo while para verificar que el usuario si escoja o 1 o 2 en la pregunta de "¿Quieres seguir?". 
+----------------------------------------------------------------------
+CASO "NO PALABRAS FORMADAS"
+
+en un principio si no se formaban palabras con las letras en la mano el programa no paraba de arrojar errores, por lo que se debió crear un control en la clase principal, donde se preguntaba si la lista de validadas sí tenía datos, y en el caso de que no, simplemente arroja un anuncio de que no se formaron palabras y seguía con su normal funcionamiento
