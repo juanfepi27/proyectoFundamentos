@@ -1,23 +1,54 @@
 /**
- * Esta clase genera posibles palabras a partir de las letras que
- * el usario tiene en su mano
+ * Esta clase genera posibles palabras a partir de las letras
+que el usuario tiene en su mano.
  * @author Helmuth Trefftz
+ * @author Gian Paul Sánchez
+ * @author Maria Paula Alaya
+ * @author Juan Felipe Pinzón
+ * @version 2021 05 13
  */
 
 import java.util.ArrayList;
 
 public class LetterCombinations{
 
+	
+	/**
+		* Arreglo auxiliar que permite ordenar las letras en la mano
+		* del jugador en un arreglo de caracteres
+	*/
 	UsedLetter [] usedLetters;
+	/**
+	 * Atributo auxiliar para ayudar a la creación de las variantes 
+	 * de diferente longitud que resultan de las letras en la mano
+	 * del usuario
+	 * 
+	 */
 	int longitud;
+	
+	/**
+	 * Objeto de la clase Diccionario
+	 */
 	Diccionario diccionario;
+	
+	/**
+	 * Objeto de la clase Tablero
+	 */
 	Tablero tablero;
+	
+	/**
+	 * Arreglo dinámico que contiene las palabras que se podrán sugerir al usuario
+	 */
 	ArrayList <String> palabrasASugerir = new ArrayList<>();
+	
+	/**
+	 * Arreglo dinámico de la clase Puntaje que contiene las palabras con los puntajes
+	 */
 	ArrayList <Puntaje> palabrasConPuntaje = new ArrayList<>();
 	
 	/**
 		* En el constructor debe recibir un diccionario con las palabras
-		* válidas
+		* válidas y el tablero en el que se esté jugando
 	*/
 	public LetterCombinations(Diccionario diccionario, Tablero tablero) {
 		this.diccionario = diccionario;

@@ -1,11 +1,12 @@
 /**
- * En esta clase se crean tableros que por el momento
+ * En esta clase se crean tableros, que por el momento
  * son arrays dinámicos, en el tablero creado se 
  * almacenarán las palabras elegidas por los juagadores.
  * 
  * @author Gian Paul Sánchez
- * @author Maria Paula Ayala
+ * @author Maria Paula Alaya
  * @author Juan Felipe Pinzón
+ * @version 2021 05 13
  */
 
 import java.util.ArrayList;
@@ -14,8 +15,10 @@ import java.util.InputMismatchException;
 import java.lang.IndexOutOfBoundsException;
 
 public class Tablero{
-
-  	public ArrayList<String> palabrasEnTablero = new ArrayList<>();
+/**
+	 * Arreglo dinámico que contiene las palabras que están en el tablero del juego
+	 */
+  public ArrayList<String> palabrasEnTablero = new ArrayList<>();
 
 	/**
 	 * Con este método se añade al tablero la palabra elegida por el usuario.
@@ -23,17 +26,26 @@ public class Tablero{
 	 * @param lc Objeto de la clase LetterCombinations.
 	 */
 	public void anadirAlTablero(LetterCombinations lc){
-
-		System.out.print("\nEscoge la opción de la palabra que quieres añadir al tablero: ");
-		
+    
 		try{
 			Scanner scanner = new Scanner(System.in);
 			
-			int opcionElegida = scanner.nextInt();
+			if(lc.palabrasConPuntaje.size()>1){
 
-            this.palabrasEnTablero.add(lc.palabrasConPuntaje.get(opcionElegida-1).getPalabra());
+                System.out.print("\nEscoge la opción de la palabra que quieres añadir al tablero: ");
 
-            scanner.close();
+                int opcionElegida = scanner.nextInt();
+
+                this.palabrasEnTablero.add(lc.palabrasConPuntaje.get(opcionElegida-1).getPalabra());
+
+				System.out.println("\nSe ha añadido la palabra "+lc.palabrasConPuntaje.get(opcionElegida-1).getPalabra().toUpperCase()+ " al tablero.");
+            }
+
+            else{
+                this.palabrasEnTablero.add(lc.palabrasConPuntaje.get(0).getPalabra());
+
+				System.out.println("\nSe ha añadido la palabra "+lc.palabrasConPuntaje.get(0).getPalabra().toUpperCase()+" al tablero.");
+            }
 			
 		}
 
