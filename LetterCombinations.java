@@ -3,9 +3,9 @@
 que el usuario tiene en su mano.
  * @author Helmuth Trefftz
  * @author Gian Paul Sánchez
- * @author Maria Paula Alaya
+ * @author Maria Paula Ayala
  * @author Juan Felipe Pinzón
- * @version 2021 05 13
+ * @version 2021 05 26
  */
 
 import java.util.ArrayList;
@@ -86,11 +86,11 @@ public class LetterCombinations{
 
 		if(s.length() == longitud) {
 
-			if(diccionario.buscarPalabras(s)) {
-				//Si no está en estos arrays(reptida o ya usada) añádala.
-				if(	!(palabrasASugerir.contains(s)) && !(tablero.palabrasEnTablero.contains(s))) {
-					this.palabrasASugerir.add(s);
-				}
+
+			//Si se encuentra en el diccionario, si no se encuentra en palabrasASugerir y si no se encuentra en palabrasEnTablero, añada la palabra en palabrasASugerir.
+			if(diccionario.buscarPalabras(s) && !(palabrasASugerir.contains(s)) && !(tablero.getPalabrasEnTablero().contains(s))) {
+				
+				this.palabrasASugerir.add(s);
 			}
 
 		}

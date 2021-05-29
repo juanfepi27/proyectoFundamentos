@@ -4,7 +4,7 @@
  * estándares del juego Scrabble.
  * 
  * @author Gian Paul Sánchez
- * @author Maria Paula Alaya
+ * @author Maria Paula Ayala
  * @author Juan Felipe Pinzón
  */
 public class Puntaje{

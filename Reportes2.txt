@@ -1,0 +1,23 @@
+CREACIÓN DE LA INTERFAZ 
+Interpretamos el tablero como una matriz estática de carácteres 10*10 que inicialmente se rellena vacío
+
+Para dibujar las celdas del tablero inicialmente pusimos un print que mostraba las 10 celdas horizontales y con un ciclo, replicabamos esta 10 veces
+
+Posteriormente cambiamos la anterior propuesta a imprimir solo una celda y con dos ciclos mostrar la matriz de 10*10 convirtiendose en el método dibujarTablero():
+
+	public void dibujarTablero(){
+
+		System.out.print("\n   0 1 2 3 4 5 6 7 8 9 ");
+    
+    for(int i = 0; i<10; i++){
+			
+			System.out.println("\n  ---------------------");
+			System.out.print( i + " |");
+        for(int j = 0; j < 10; j++){
+          System.out.print(letrasEnTablero[i][j] + "|");
+        }
+		}
+		System.out.println("\n  ---------------------");
+  }
+
+el cual numeramos para facilidades a futuro

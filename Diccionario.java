@@ -5,7 +5,10 @@
  * está en una línea diferente
  * 
  * @author Helmuth Trefftz
- * @version 2021 04 27
+ * @author Gian Paul Sánchez
+ * @author Maria Paula Ayala
+ * @author Juan Felipe Pinzón
+ * @version 2021 05 13
  */
 import java.io.File;
 import java.io.FileNotFoundException;

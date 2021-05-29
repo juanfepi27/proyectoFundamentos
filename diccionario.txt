@@ -11,3 +11,7 @@ planta
 arbol
 avión
 carro 
+------
+saca
+sapo
+java
