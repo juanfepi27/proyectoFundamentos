@@ -4,13 +4,17 @@
  * Y luego invoca el método crearPalabras 
  * 
  * @author Helmuth Trefftz
- * @author Gian Paul Sánchez
- * @author Maria Paula Ayala
- * @author Juan Felipe Pinzón
- * @version 2021 05 27
+ * @author Gian Paul Sánchez Aristizabal
+ * @author Maria Paula Ayala Lizarazo
+ * @author Juan Felipe Pinzón Trejo
+ * @version 02/06/2021
  */
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.IOException;
 
 public class Scrabble{
 	/**
@@ -33,6 +37,19 @@ public class Scrabble{
 		char siNo = '1';
 
 
+		do{
+
+			System.out.println("Introduzca el nombre del juego ('Recuerde que no puede ser diccionario')");
+			Tablero.nombreArchivoRespaldo= entrada.nextLine();
+			Tablero.nombreArchivoRespaldo= Tablero.nombreArchivoRespaldo+".txt";
+
+			//System.out.println("el nombre del archivo es: _"+Tablero.nombreArchivoRespaldo);
+		
+		}while(Tablero.nombreArchivoRespaldo.equals("diccionario.txt"));
+		
+		File archivoRespaldo = new File(Tablero.nombreArchivoRespaldo);
+		
+
 		System.out.print("\nIntroduzca la cantidad de jugadores: ");
 		char cantJugadoresChar = entrada.next().charAt(0);
 		int cantJugadoresInt = Character.getNumericValue(cantJugadoresChar);
@@ -51,18 +68,47 @@ public class Scrabble{
 			cantJugadoresInt = Character.getNumericValue(cantJugadoresChar);
 		}
 
+
+		try {
+			FileWriter respaldo = new FileWriter(Tablero.nombreArchivoRespaldo,true);
+			PrintWriter escritorDelRespaldo = new PrintWriter(respaldo);
+
+		escritorDelRespaldo.println("\n\n--------------------------------------------------------------------------\nHa comenzado el juego: "+ Tablero.nombreArchivoRespaldo.substring( 0 , (Tablero.nombreArchivoRespaldo.length()-4) )+"\nCon "+cantJugadoresInt+" jugadores\n" );
+
+			escritorDelRespaldo.close();
+
+
+		} catch (IOException e) {
+			System.out.println("ha ocurrido un problema con el archivo, la información no será respaldada"+e.getMessage());
+		}
+
+
+		//Ciclo principal de juego.
 		do{
+
+			LetterCombinations lc = new LetterCombinations(diccionario, tablero);
 
 			if(ronda == 1 && numJugador == 1){
 
 				tablero.dibujarTablero();
 
-				tablero.hayPalabras();
+				tablero.hayPalabras(lc);
 			}
 
-			LetterCombinations lc = new LetterCombinations(diccionario, tablero);
 
-
+			try {
+				FileWriter respaldo = new FileWriter(Tablero.nombreArchivoRespaldo,true);
+				PrintWriter escritorDelRespaldo = new PrintWriter(respaldo);
+	
+			escritorDelRespaldo.println("\n\nRONDA "+ronda+" JUGADOR "+numJugador+"\n" );
+	
+				escritorDelRespaldo.close();
+	
+	
+			} catch (IOException e) {
+				System.out.println("ha ocurrido un problema con el archivo, la información no será respaldada"+e.getMessage());
+			}
+			
 			System.out.println("\nES EL TURNO DEL JUGADOR "+numJugador);
 
 			System.out.print("\nESCRIBA LAS LETRAS QUE TIENE EN SU MANO: ");
@@ -82,15 +128,18 @@ public class Scrabble{
 			
 
 			//Las siguientes lineas sirven para sacar las combinaciones seún las letras que ya existen en el tablero. Si las letras en el tablero son inexistentes entonces se utilizan solo las letras en la mano.
-			if(tablero.getLetrasEnTablero().size() == 0){
-				lc.crearPalabras(letrasEnMiMano);
-			}
+			
+			//Siempre se hacen las combinaciones con las letrasEnMiMano
+			lc.crearPalabras(letrasEnMiMano);
+			
 
-			else{
+			//Pero, si letrasEnTablero es mayor a 0 tambien debemos hacer las combinaciones con estas letras.
+			if(tablero.getLetrasEnTablero().size() > 0){
 
 				for(int i = 0; i<tablero.getLetrasEnTablero().size(); i++){
 
-					lc.crearPalabras(letrasEnMiMano + tablero.getLetrasEnTablero().get(i));
+					//lc.crearPalabrasConLetrasTablero(letrasEnMiMano, tablero.getLetrasEnTablero().get(i));
+					lc.crearPalabrasConLetrasTablero(letrasEnMiMano, tablero.getLetrasEnTablero().get(i));
 
 				}
 
@@ -98,15 +147,30 @@ public class Scrabble{
 			
 
 			//Líneas para asegurarnos que las palabras a sugerir son mayor que 0.
-			if(lc.palabrasASugerir.size()>0){
+			if(lc.getPalabrasASugerir().size()>0){
 
 				System.out.println("\nEstas son tus mejores opciones:\n");
-				lc.darPuntaje(lc.palabrasASugerir);
+				lc.darPuntaje(lc.getPalabrasASugerir());
 				
 				tablero.anadirAlTablero(lc);
 
 			}
-			else System.out.println("\nNo se formó ninguna palabra\n");
+			else {
+				System.out.println("\nNo se formó ninguna palabra\n");
+
+				try {
+					FileWriter respaldo = new FileWriter(Tablero.nombreArchivoRespaldo,true);
+					PrintWriter escritorDelRespaldo = new PrintWriter(respaldo);
+		
+					escritorDelRespaldo.println("\n\nNO SE FORMARON PALABRAS\n" );
+		
+					escritorDelRespaldo.close();
+		
+		
+				} catch (IOException e) {
+					System.out.println("ha ocurrido un problema con el archivo, la información no será respaldada"+e.getMessage());
+				}
+			}
 		
 			
 
@@ -114,22 +178,13 @@ public class Scrabble{
 			
 			if(numJugador == cantJugadoresInt){
 				
-				try{
+				System.out.println("\n¿Quieren volver a jugar otra ronda?");
+				System.out.println("\n1. Si");
+				System.out.println("2. No");
+				System.out.print("\nIngrese el número de la opción deseada: ");
 
-					System.out.println("\n¿Quieren volver a jugar otra ronda?");
+				siNo = entrada.next().charAt(0);
 
-					System.out.println("\n1. Si");
-					System.out.println("2. No");
-			
-					System.out.print("\nIngrese el número de la opción deseada: ");
-
-					siNo = entrada.next().charAt(0);
-
-				}
-				catch(InputMismatchException e){
-					siNo = '0';
-				}
-				
 
 				while(siNo != '1' && siNo != '2' ){
 
@@ -139,10 +194,10 @@ public class Scrabble{
 
 					System.out.println("\n¿Quieren volver a jugar otra ronda?");
 
-					System.out.println("\n1. Si");
+					System.out.println("1. Si");
 					System.out.println("2. NO");
 			
-					System.out.print("\nIngrese el número de la opción deseada: ");
+					System.out.print("Ingrese el número de la opción deseada: ");
 
 					entrada.nextLine();
 					siNo = entrada.next().charAt(0);
@@ -164,7 +219,7 @@ public class Scrabble{
 				numJugador = 1;
 				ronda++;
 			}
-
+		
 		}
 		while(siNo == '1');
 		
@@ -172,6 +227,19 @@ public class Scrabble{
 		tablero.dibujarTablero();
 
 		System.out.print("\nFinalizó el programa.");
+
+		try {
+			FileWriter respaldo = new FileWriter(Tablero.nombreArchivoRespaldo,true);
+			PrintWriter escritorDelRespaldo = new PrintWriter(respaldo);
+
+			escritorDelRespaldo.println("\n\nFIN DEL JUEGO\n--------------------------------------------------------------------------" );
+
+			escritorDelRespaldo.close();
+
+
+		} catch (IOException e) {
+			System.out.println("ha ocurrido un problema con el archivo, la información no será respaldada"+e.getMessage());
+		}
 
 		entrada.close();
 	}

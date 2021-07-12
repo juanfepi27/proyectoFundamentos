@@ -2,10 +2,10 @@
  * Esta clase genera posibles palabras a partir de las letras
 que el usuario tiene en su mano.
  * @author Helmuth Trefftz
- * @author Gian Paul Sánchez
- * @author Maria Paula Ayala
- * @author Juan Felipe Pinzón
- * @version 2021 05 26
+ * @author Gian Paul Sánchez Aristizabal
+ * @author Maria Paula Ayala Lizarazo
+ * @author Juan Felipe Pinzón Trejo
+ * @version 03/06/2021
  */
 
 import java.util.ArrayList;
@@ -14,38 +14,46 @@ public class LetterCombinations{
 
 	
 	/**
-		* Arreglo auxiliar que permite ordenar las letras en la mano
-		* del jugador en un arreglo de caracteres
+	* Arreglo auxiliar que permite ordenar las letras en la mano
+	* del jugador en un arreglo de caracteres
 	*/
-	UsedLetter [] usedLetters;
+	public UsedLetter [] usedLetters;
 	/**
 	 * Atributo auxiliar para ayudar a la creación de las variantes 
 	 * de diferente longitud que resultan de las letras en la mano
 	 * del usuario
 	 * 
 	 */
-	int longitud;
+	public int longitud;
 	
 	/**
 	 * Objeto de la clase Diccionario
 	 */
-	Diccionario diccionario;
+	public Diccionario diccionario;
 	
 	/**
 	 * Objeto de la clase Tablero
 	 */
-	Tablero tablero;
-	
+	public Tablero tablero;
+
 	/**
-	 * Arreglo dinámico que contiene las palabras que se podrán sugerir al usuario
+	 * objeto que se encarga de asiganar el "pantallazo" en el que se encuentra de las palabras con puntaje
 	 */
-	ArrayList <String> palabrasASugerir = new ArrayList<>();
+	public int apartadoAMostrarPalablasConPuntaje = 0;
 	
-	/**
-	 * Arreglo dinámico de la clase Puntaje que contiene las palabras con los puntajes
-	 */
-	ArrayList <Puntaje> palabrasConPuntaje = new ArrayList<>();
+
+	private ArrayList <String> palabrasASugerir = new ArrayList<>();
 	
+	private ArrayList <Puntaje> palabrasConPuntaje = new ArrayList<>();
+
+	private ArrayList<CombinacionConTablero> combinacionesLetrasTablero = new ArrayList<>();
+
+	private char letraEsp;
+
+	private ArrayList<String> combinacionesPalabrasTablero = new ArrayList<>();
+
+	
+
 	/**
 		* En el constructor debe recibir un diccionario con las palabras
 		* válidas y el tablero en el que se esté jugando
@@ -86,14 +94,17 @@ public class LetterCombinations{
 
 		if(s.length() == longitud) {
 
-
 			//Si se encuentra en el diccionario, si no se encuentra en palabrasASugerir y si no se encuentra en palabrasEnTablero, añada la palabra en palabrasASugerir.
-			if(diccionario.buscarPalabras(s) && !(palabrasASugerir.contains(s)) && !(tablero.getPalabrasEnTablero().contains(s))) {
-				
+			if(diccionario.buscarPalabras(s) && !(palabrasASugerir.contains(s)) && !(tablero.getPalabrasEnTablero().contains(s)) && (tablero.getPalabrasEnTablero().size()==0)) {
+
 				this.palabrasASugerir.add(s);
+				
 			}
 
+			crearCombinacionesConTablero(s);
+
 		}
+		
 
 		for(int i = 0; i < usedLetters.length; i++) {
 			if(!usedLetters[i].used) {
@@ -101,8 +112,7 @@ public class LetterCombinations{
 				receiveString(s+usedLetters[i].letter);
 				usedLetters[i].used = false;
 			}
-	}
-
+		}
 	}
 
 	/**
@@ -116,7 +126,9 @@ public class LetterCombinations{
 	public void crearPalabras(String letrasDeMiMano) {
 		String letras = letrasDeMiMano;
 		init(letras);
-		for(longitud = 2; longitud <= letras.length(); longitud++) {
+
+		//Cambiaré la longitud a 1 para poder usar este método con 1 letra y de esta manera poder usar el método combinacionesPalabrasEnTableroYLetrasEnMano(String s) 
+		for(longitud = 1; longitud <= letras.length(); longitud++) {
 			receiveString("");
 		}
 	}
@@ -329,20 +341,212 @@ public class LetterCombinations{
 	 */
 	public void mostrarPalabrasConPuntaje(ArrayList<Puntaje> palabrasConPuntaje){
 
-		if(palabrasConPuntaje.size()<=10){
+		/*if(palabrasConPuntaje.size()<10){
 
 			for(int i = 0; i < palabrasConPuntaje.size(); i++){
 				System.out.println((i+1)+". " + palabrasConPuntaje.get(i).getPalabra() + " -> su puntaje es: " + palabrasConPuntaje.get(i).getPuntos());
 			}
 
     	}
+		else*/ if(((palabrasConPuntaje.size()-apartadoAMostrarPalablasConPuntaje*10)/10)==0){
+
+			for(int i = (0+apartadoAMostrarPalablasConPuntaje*10); i < palabrasConPuntaje.size(); i++){
+				System.out.println((i+1)+". " + palabrasConPuntaje.get(i).getPalabra() + " -> su puntaje es: " + palabrasConPuntaje.get(i).getPuntos());
+			}
+
+    	}
 		else{
 
-			for(int i = 0; i < 10; i++){
+			int inicio = 0+apartadoAMostrarPalablasConPuntaje*10;
+			int fin = 9+apartadoAMostrarPalablasConPuntaje*10;
+
+			for(int i = inicio; i <= fin; i++){
 				System.out.println((i+1)+". " + palabrasConPuntaje.get(i).getPalabra()+ " -> su puntaje es: " + palabrasConPuntaje.get(i).getPuntos());
 			}
 			
     	}
+	}
+
+
+	/**
+	 * El siguiente método tiene la función de utilizar las palabras en el tablero y unirlas a las diferentes combinaciones de las letras en mi mano, si esta unión da como resultado una palabra entonces la agregamos a palabrasASugerir para que se le calcule el puntaje y sea sugerida al usuario. La unión se hace como prefijo, y luego se hace también como sufijo.
+	 * @param s Combinación de las letras en mano.
+	 */
+	public void crearCombinacionesConTablero(String s){
+
+		String palabraPorDelante, palabraPorDetras; 
+
+
+		for(int i = 0; i < tablero.getPalabrasEnTablero().size(); i++){
+
+			palabraPorDelante = tablero.getPalabrasEnTablero().get(i) + s;
+			palabraPorDetras = s + tablero.getPalabrasEnTablero().get(i);
+
+			if(diccionario.buscarPalabras(palabraPorDelante)){
+				
+				if(!palabrasASugerir.contains(palabraPorDelante) && !(tablero.getPalabrasEnTablero().contains(palabraPorDelante))){
+					palabrasASugerir.add(palabraPorDelante);
+					combinacionesPalabrasTablero.add(palabraPorDelante);
+				}
+			}
+			
+			if(diccionario.buscarPalabras(palabraPorDetras) && !(tablero.getPalabrasEnTablero().contains(palabraPorDelante))){
+				
+				if(!palabrasASugerir.contains(palabraPorDetras)){
+					palabrasASugerir.add(palabraPorDetras);
+					combinacionesPalabrasTablero.add(palabraPorDetras);
+				}
+			}
+
+		}
+
+	}
+
+
+	/**
+	 * Método getter para acceder al arreglo palabrasASugerir.
+	 * 
+	 * @return Retorna el ArrayList<> palabrasASugerir.
+	 */
+	public ArrayList<String> getPalabrasASugerir(){
+		return this.palabrasASugerir;
+	}
+
+
+
+	/**
+	 * Método getter para acceder al arreglo palabrasConPuntaje.
+	 * 
+	 * @return Retorna el ArrayList<> palabrasConPuntaje.
+	 */
+	public ArrayList<Puntaje> getPalabrasConPuntaje(){
+		return this.palabrasConPuntaje;
+	}
+
+
+	/**
+	 * Método getter para acceder al arreglo combinacionesLetrasTablero.
+	 * 
+	 * @return Retorna el ArrayList<> combinacionesLetrasTablero.
+	 */
+	public ArrayList<CombinacionConTablero> getCombinacionesLetrasTablero(){
+		return this.combinacionesLetrasTablero;
+	}
+
+
+	/**
+	 * Método getter para acceder al valor del atributo privado letraEsp.
+	 * 
+	 * @return Retorna el valor almacenado como char en letraEsp.
+	 */
+	public char getLetraEsp(){
+		return this.letraEsp;
+	}
+
+
+	/**
+	 * Método que invoca al método receiveStringConLetrasTablero para crear diversas combinaciones con las letras que tengo en mano añadiendo individualmente cada una de las letras del tablero.
+	 * 
+	 * @param letrasDeMiMano String que corresponde a las letras que tiene el ususario en mano.
+	 * @param letraEnTablero char que corresponde al caracter del tablero que se utilizará en la formación de posibles combinaciones.
+	 */
+	public void crearPalabrasConLetrasTablero(String letrasDeMiMano, char letraEnTablero){
+		
+		String s = letrasDeMiMano + letraEnTablero;
+
+		init(s);
+		
+		for(longitud = 2; longitud <= s.length(); longitud++){
+			receiveStringConLetrasTablero("", letraEnTablero);
+		}
+		
+	}
+
+
+	/**
+	 * Método que hace las diversas combinaciones entre las letrasEnMano y letrasEnTablero. Su principal función es sacar solamente las combinaciones que hagan uso de letras en tablero.
+	 * 
+	 * @param s String que corresponde a las letras que tiene el ususario en mano.
+	 * @param letraEnTablero char que corresponde al caracter del tablero que se utilizará en la formación de posibles combinaciones.
+	 */
+	public void receiveStringConLetrasTablero(String s, char letraEnTablero){
+		
+		if(s.length() == longitud && s.contains(letraEnTablero+"")) {
+
+			//Si se encuentra en el diccionario, si no se encuentra en palabrasASugerir y si no se encuentra en palabrasEnTablero, añada la palabra en palabrasASugerir.
+			if(diccionario.buscarPalabras(s) && !(palabrasASugerir.contains(s)) && !(tablero.getPalabrasEnTablero().contains(s))) {
+				
+				this.palabrasASugerir.add(s);
+
+				CombinacionConTablero comb = new CombinacionConTablero(s, letraEnTablero);
+				combinacionesLetrasTablero.add(comb);
+			}
+
+		}
+		
+
+		for(int i = 0; i < usedLetters.length; i++) {
+			if(!usedLetters[i].used) {
+				usedLetters[i].used = true;
+				receiveStringConLetrasTablero(s+usedLetters[i].letter, letraEnTablero);
+				usedLetters[i].used = false;
+			}
+		}
+	}
+
+
+
+	/**
+     * Método para saber si la palabra elegida está dentro de las combinaciones hechas con letras en tablero.
+     * 
+     * @param s Palabra a comparar con cada elemento del arreglo combinacionesLetrasTablero.
+     * @return Retorna si existe o no existe esta combinacion dentro del arreglo combinacionesLetrasTablero(true o false).
+     */
+    public boolean existeCombinacionLetrasTablero(String s){
+
+        boolean existe = false;
+
+        for(int i = 0; i<this.getCombinacionesLetrasTablero().size(); i++){
+
+            if((this.getCombinacionesLetrasTablero().get(i).getCombinacion()).equals(s)){
+                letraEsp = this.getCombinacionesLetrasTablero().get(i).getLetraEspecial();
+				return true;
+            }
+
+        }
+
+        return existe;
+
+    }
+
+
+	/**
+	 * Méotod para saber si la palabra elegida está dentro de las combinaciones creadas con las palabras que ya existen en tablero.
+	 * 
+	 * @param s Palabra a comparar con cada elemento del arreglo combinacionesPalabrasTablero.
+	 * @return Retorna si existe o no combinacion dentro del arreglo combinacionesPalabrasTablero(true o false).
+	 */
+	public boolean existeCombinacionPalabrasTablero(String s){
+
+        boolean existe = false;
+
+        for(int i = 0; i<this.getCombinacionesPalabrasTablero().size(); i++){
+
+            if((this.getCombinacionesPalabrasTablero().get(i)).equals(s)){
+				return true;
+            }
+
+        }
+        return existe;
+    }
+
+	/**
+	 * Método getter utilizado para acceder al arreglo combiancionesPalabrasTablero.
+	 * 
+	 * @return Retorna el ArrayList<> combinacionesPalabrasTablero.
+	 */
+	public ArrayList<String> getCombinacionesPalabrasTablero(){
+		return this.combinacionesPalabrasTablero;
 	}
 
 }

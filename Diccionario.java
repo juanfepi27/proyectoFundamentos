@@ -5,10 +5,10 @@
  * está en una línea diferente
  * 
  * @author Helmuth Trefftz
- * @author Gian Paul Sánchez
- * @author Maria Paula Ayala
- * @author Juan Felipe Pinzón
- * @version 2021 05 13
+ * @author Gian Paul Sánchez Aristizabal
+ * @author Maria Paula Ayala Lizarazo
+ * @author Juan Felipe Pinzón Trejo
+ * @version 13/05/2021
  */
 import java.io.File;
 import java.io.FileNotFoundException;

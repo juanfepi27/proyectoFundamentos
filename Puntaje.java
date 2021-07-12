@@ -3,9 +3,10 @@
  * su respectiva puntuación, esta puntuación será tomada con base los 
  * estándares del juego Scrabble.
  * 
- * @author Gian Paul Sánchez
- * @author Maria Paula Ayala
- * @author Juan Felipe Pinzón
+ * @author Gian Paul Sánchez Aristizabal
+ * @author Maria Paula Ayala Lizarazo
+ * @author Juan Felipe Pinzón Trejo
+ * @version 13/05/2021
  */
 public class Puntaje{
 
